@@ -32,7 +32,7 @@ class _todoAppState extends State<todoApp> {
       body: Column(
         children: [
           Container(
-            child: Text('home page'),
+            child: Text('home page waueh dweidhuw euweuwe '),
           ),
         ],
       ),
