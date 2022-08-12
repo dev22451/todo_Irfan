@@ -1,5 +1,6 @@
 import 'dart:ffi';
 // import 'stateFul.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,6 +13,7 @@ class todo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: todoApp(),
     );
   }
@@ -19,8 +21,11 @@ class todo extends StatelessWidget {
 
 class Todo {
   final String name;
-  bool checked;
-  Todo({required this.name, required this.checked});
+  // bool checked;
+  Todo({
+    required this.name,
+    //  required this.checked
+  });
 }
 
 class TodoItem extends StatelessWidget {
@@ -31,51 +36,57 @@ class TodoItem extends StatelessWidget {
 
   final Todo todo;
   final onTodoChanged;
-  _changeTextStyle(bool checked) {
-    if (!checked) {
-      return null;
-    }
-    return TextStyle(
-      color: Colors.red,
-      // fontSize: 20,
-      decoration: TextDecoration.lineThrough,
-    );
-  }
+  // _changeTextStyle(bool checked) {
+  //   if (!checked) {
+  //     return null;
+  //   }
+  //   return TextStyle(
+  //     color: Colors.red,
+  //     // fontSize: 20,
+  //     decoration: TextDecoration.lineThrough,
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      iconColor: Colors.red,
-      onTap: (() {
-        onTodoChanged(todo);
-      }),
-      leading: CircleAvatar(
-        backgroundColor: Color.fromARGB(255, 255, 230, 0),
-        foregroundColor: Colors.black,
-        child: Text(todo.name[0]),
-      ),
-      title: Container(
-        margin: EdgeInsets.only(top: 18),
-        child: Text(
-          todo.name,
-          style: _changeTextStyle(todo.checked),
-        ),
-      ),
-      subtitle: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Icon(
-              Icons.delete,
+    return Container(
+        decoration: BoxDecoration(
+
+            //color: const Color(0xFF66BB6A),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black,
+                blurRadius: 5.0,
+              ),
+            ]),
+        child: ListTile(
+          iconColor: Colors.white,
+          onTap: (() {
+            onTodoChanged(todo);
+          }),
+          leading: CircleAvatar(
+            backgroundColor: Color.fromARGB(255, 255, 230, 0),
+            foregroundColor: Colors.black,
+            child: Text(todo.name[0]),
+          ),
+          title: Container(
+            margin: EdgeInsets.only(top: 18),
+            child: Text(
+              todo.name, style: TextStyle(color: Colors.white),
+              // style: _changeTextStyle(todo.checked),
             ),
-            Icon(
-              Icons.system_security_update_good,
-              color: Colors.green,
+          ),
+          subtitle: Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Icon(
+                  Icons.delete,
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 }
 
@@ -94,7 +105,20 @@ class _todoAppState extends State<todoApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Todo App'),
+        title: Text('Todo Application'),
+        leading: IconButton(
+          onPressed: () {},
+          icon: Icon(Icons.home),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.black,
+            ),
+            onPressed: () {},
+          )
+        ],
         backgroundColor: Colors.yellow,
         foregroundColor: Colors.black,
       ),
@@ -120,24 +144,28 @@ class _todoAppState extends State<todoApp> {
 
   void _changeTodo(Todo todo) {
     setState(() {
-      todo.checked = !todo.checked;
+      // todo.checked = !todo.checked;
+      _todoList.remove(todo);
     });
   }
 
   void _addTodoItem(String name) {
     setState(() {
-      _todoList.add(Todo(
+      final index = _todoList.add(Todo(
         name: name,
-        checked: false,
+        // checked: false,
       ));
     });
+    print('[$_todoList.indexOf(Todo(name: name, checked: false))]');
+
     _controller.clear();
   }
 
   Future<void> _displayList() async {
     return showDialog<void>(
       context: context,
-      // barrierDismissible: false, // user must tap button!
+      // print(context);
+
       builder: (BuildContext context) {
         return AlertDialog(
           // contentPadding: ,
