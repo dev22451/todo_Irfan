@@ -1,7 +1,8 @@
 import 'dart:ffi';
-// import 'stateFul.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'controller/todoController.dart';
 
 void main() {
   runApp(todo());
@@ -12,7 +13,7 @@ class todo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       home: todoApp(),
     );
@@ -21,10 +22,8 @@ class todo extends StatelessWidget {
 
 class Todo {
   final String name;
-  // bool checked;
   Todo({
     required this.name,
-    //  required this.checked
   });
 }
 
@@ -36,16 +35,6 @@ class TodoItem extends StatelessWidget {
 
   final Todo todo;
   final onTodoChanged;
-  // _changeTextStyle(bool checked) {
-  //   if (!checked) {
-  //     return null;
-  //   }
-  //   return TextStyle(
-  //     color: Colors.red,
-  //     // fontSize: 20,
-  //     decoration: TextDecoration.lineThrough,
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -70,36 +59,38 @@ class TodoItem extends StatelessWidget {
             child: Text(todo.name[0]),
           ),
           title: Container(
-            margin: EdgeInsets.only(top: 18),
+            // margin: EdgeInsets.only(top: 18),
+            padding: EdgeInsets.all(15),
             child: Text(
-              todo.name, style: TextStyle(color: Colors.white),
-              // style: _changeTextStyle(todo.checked),
+              todo.name,
+              style: TextStyle(color: Colors.white, fontSize: 18),
             ),
           ),
-          subtitle: Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Icon(
-                  Icons.delete,
-                ),
-              ],
-            ),
-          ),
+          // subtitle: Container(
+          //   child: Row(
+          //     mainAxisAlignment: MainAxisAlignment.end,
+          //     children: <Widget>[
+          //       Icon(
+          //         Icons.delete,
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ));
   }
 }
 
 class todoApp extends StatefulWidget {
-  const todoApp({Key? key}) : super(key: key);
+  todoApp({Key? key}) : super(key: key);
 
   @override
   State<todoApp> createState() => _todoAppState();
 }
 
 class _todoAppState extends State<todoApp> {
-  final List<Todo> _todoList = <Todo>[];
-  final TextEditingController _controller = TextEditingController();
+  mainController countController = Get.put(mainController());
+  // final List<Todo> _todoList = <Todo>[];
+  // final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -122,13 +113,16 @@ class _todoAppState extends State<todoApp> {
         backgroundColor: Colors.yellow,
         foregroundColor: Colors.black,
       ),
-      body: ListView(
-        children: _todoList.map((Todo todo) {
-          return TodoItem(
-            todo: todo,
-            onTodoChanged: _changeTodo,
-          );
-        }).toList(),
+      body: Obx(
+        () => ListView(
+          children: countController.todoList.map((Todo todo) {
+            print(todo);
+            return TodoItem(
+              todo: todo,
+              onTodoChanged: _changeTodo,
+            );
+          }).toList(),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () => _displayList(),
@@ -143,39 +137,47 @@ class _todoAppState extends State<todoApp> {
   }
 
   void _changeTodo(Todo todo) {
-    setState(() {
-      // todo.checked = !todo.checked;
-      _todoList.remove(todo);
-    });
+    // _todoList.remove(todo);
+    Get.defaultDialog(
+        title: 'Delete Item',
+        middleText: 'Delete one',
+        textConfirm: 'Okay',
+        onConfirm: () {
+          setState(() {
+            countController.todoList.remove(todo);
+            Navigator.of(context).pop();
+            Get.snackbar('Successfully', 'deleted this Item',
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.pink,
+                colorText: Colors.white);
+          });
+        },
+        onCancel: () {
+          // _todoList.single;
+        },
+        confirmTextColor: Colors.white,
+        backgroundColor: Colors.yellow,
+        textCancel: 'Cancel');
   }
 
-  void _addTodoItem(String name) {
-    setState(() {
-      final index = _todoList.add(Todo(
-        name: name,
-        // checked: false,
-      ));
-    });
-    print('[$_todoList.indexOf(Todo(name: name, checked: false))]');
-
-    _controller.clear();
+  void _addTodoItem(name) {
+    countController.addText(name);
+    countController.controllername.clear();
+    // countController.todoList.clear();
   }
 
   Future<void> _displayList() async {
     return showDialog<void>(
       context: context,
-      // print(context);
-
       builder: (BuildContext context) {
         return AlertDialog(
-          // contentPadding: ,
           backgroundColor: Color.fromARGB(255, 255, 247, 0),
           title: const Text(
             'Add a new todo item',
             style: TextStyle(color: Colors.black),
           ),
           content: TextField(
-            controller: _controller,
+            controller: countController.controllername,
             decoration: const InputDecoration(
                 hintText: 'Type your new todo', iconColor: Colors.red),
           ),
@@ -187,8 +189,13 @@ class _todoAppState extends State<todoApp> {
                       fontWeight: FontWeight.bold,
                       fontSize: 15)),
               onPressed: () {
+                Get.snackbar('Successfully Added', 'Added todo Item in List',
+                    // snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.pink,
+                    colorText: Colors.white);
+
                 Navigator.of(context).pop();
-                _addTodoItem(_controller.text);
+                _addTodoItem(countController.controllername.text);
               },
             ),
           ],
