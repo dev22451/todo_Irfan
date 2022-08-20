@@ -1,3 +1,5 @@
+// Without getX
+
 // import 'dart:ffi';
 // // import 'stateFul.dart';
 // import 'package:flutter/foundation.dart';

@@ -5,10 +5,18 @@ import 'package:flutter/material.dart';
 class mainController extends GetxController {
   final List<Todo> todoList = <Todo>[].obs;
 
-  // var todoList = <todo>[].obs;
   TextEditingController controllername = TextEditingController();
+
+  updateTodo(Todo oldTodo, String newName) {
+    int index = todoList.indexOf(oldTodo);
+    todoList[index].name = newName;
+  }
 
   void addText(value) {
     todoList.add(Todo(name: value));
+  }
+
+  void delete(Todo value) {
+    todoList.remove(value);
   }
 }
