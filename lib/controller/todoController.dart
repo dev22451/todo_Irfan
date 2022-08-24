@@ -1,7 +1,9 @@
+// ignore: file_names
 import 'package:first_project/main.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
+// ignore: camel_case_types
 class mainController extends GetxController {
   final List<Todo> todoList = <Todo>[].obs;
 

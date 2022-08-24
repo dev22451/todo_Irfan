@@ -1,37 +1,58 @@
-import 'dart:ffi';
-// import 'dart:js';
+// import 'dart:ffi';
+
+// ignore_for_file: avoid_unnecessary_containers
+
+// ignore: unnecessary_import, unused_import
+import 'signup.dart';
+// ignore: unnecessary_import
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'controller/todoController.dart';
 import 'editPage.dart';
+import 'login.dart';
+import 'package:get_storage/get_storage.dart';
 
-void main() {
+void main() async {
+  await GetStorage.init();
   runApp(const todo());
 }
 
+// ignore: camel_case_types
 class todo extends StatelessWidget {
   const todo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: todoApp(
-        returnData: toString(),
-      ),
-    );
+    final dataSignup = GetStorage();
+    dataSignup.writeIfNull('darkmode', false);
+
+    // ignore: prefer_const_constructors
+    return SimpleBuilder(builder: (_) {
+      bool isDarkMode = dataSignup.read('darkmode');
+      return GetMaterialApp(
+        theme: isDarkMode ? ThemeData.dark() : ThemeData.light(),
+        debugShowCheckedModeBanner: false,
+        // ignore: prefer_const_constructors
+        home: Login(dark: isDarkMode),
+      );
+    });
+
+    // GetMaterialApp(
+    //   debugShowCheckedModeBanner: false,
+    //   home: Login(),
+    // );
   }
 }
 
 class Todo {
   late String name;
-  // int id;
-  // bool checked;
+  // bool Checked;
+
   Todo({required this.name});
-  // this.checked = false;
 }
 
+// ignore: must_be_immutable
 class TodoItem extends StatelessWidget {
   mainController countController = Get.put(mainController());
   TodoItem({
@@ -40,6 +61,7 @@ class TodoItem extends StatelessWidget {
   }) : super(key: ObjectKey(todo));
 
   final Todo todo;
+  // ignore: prefer_typing_uninitialized_variables
   final onTodoChanged;
 
   @override
@@ -57,11 +79,12 @@ class TodoItem extends StatelessWidget {
             onTodoChanged(todo);
           }),
           leading: CircleAvatar(
-            backgroundColor: Color.fromARGB(255, 255, 230, 0),
+            backgroundColor: const Color.fromARGB(255, 255, 230, 0),
             foregroundColor: Colors.black,
             child: Text(todo.name[0]),
           ),
           title: Container(
+            // margin: EdgeInsets.only(top: 20),
             child: Text(
               todo.name,
               style: const TextStyle(color: Colors.white, fontSize: 18),
@@ -92,7 +115,7 @@ class TodoItem extends StatelessWidget {
                               upadate(title: todo.name, items: todo)),
                     );
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.edit,
                   ),
                 ),
@@ -103,35 +126,55 @@ class TodoItem extends StatelessWidget {
   }
 }
 
+// ignore: camel_case_types
 class todoApp extends StatefulWidget {
-  todoApp({Key? key, required this.returnData}) : super(key: key);
-  String returnData;
+  const todoApp({Key? key, required this.homeDark}) : super(key: key);
+  // String returnData;
+  final bool homeDark;
 
   @override
   State<todoApp> createState() => _todoAppState();
 }
 
+// ignore: camel_case_types
 class _todoAppState extends State<todoApp> {
-  final _formKey = GlobalKey<FormState>();
+  final dataSignup = GetStorage();
+  // final _formKey = GlobalKey<FormState>();
   mainController countController = Get.put(mainController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Todo Application'),
         leading: IconButton(
           onPressed: () {},
-          icon: Icon(Icons.home),
+          icon: IconButton(onPressed: () {}, icon: const Icon(Icons.home)),
         ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(
-              Icons.settings,
+              Icons.logout_outlined,
               color: Colors.black,
             ),
-            onPressed: () {},
-          )
+            onPressed: () {
+              dataSignup.remove('userName');
+              dataSignup.remove('password');
+              Get.snackbar(
+                  'Account Deleted', 'plaease again register then login',
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.yellow,
+                  colorText: Colors.black);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Login(
+                          dark: widget.homeDark,
+                        )),
+              );
+            },
+          ),
         ],
         backgroundColor: Colors.yellow,
         foregroundColor: Colors.black,
@@ -147,9 +190,11 @@ class _todoAppState extends State<todoApp> {
           }).toList(),
         ),
       ),
-      key: _formKey,
+      // key: _formKey,
       floatingActionButton: FloatingActionButton(
-          onPressed: () => _displayList(),
+          onPressed: () {
+            _displayList();
+          },
           tooltip: 'Add Item',
           focusColor: Colors.green,
           foregroundColor: Colors.yellow,
@@ -171,23 +216,26 @@ class _todoAppState extends State<todoApp> {
       context: context,
       builder: (BuildContext context) {
         return Form(
-          key: _formKey,
+          // key: _formKey,
           child: AlertDialog(
-            backgroundColor: Color.fromARGB(255, 255, 247, 0),
+            backgroundColor: Colors.pink,
             title: const Text(
               'Add a new todo item',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.white),
             ),
             content: TextField(
               controller: countController.controllername,
               decoration: const InputDecoration(
-                  hintText: 'Type your new todo', iconColor: Colors.red),
+                  fillColor: Colors.black,
+                  hintText: 'Type your new todo',
+                  focusColor: Colors.black,
+                  iconColor: Colors.red),
             ),
             actions: <Widget>[
               TextButton(
                 child: const Text('submit',
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 15)),
                 onPressed: () {

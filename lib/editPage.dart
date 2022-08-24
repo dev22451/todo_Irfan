@@ -1,8 +1,12 @@
+// ignore: file_names
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:get/get.dart';
 import 'controller/todoController.dart';
 
+// ignore: camel_case_types
 class upadate extends StatefulWidget {
   final String title;
   final Todo items;
@@ -12,13 +16,18 @@ class upadate extends StatefulWidget {
   State<upadate> createState() => _upadateState();
 }
 
+// ignore: camel_case_types
 class _upadateState extends State<upadate> {
   final _formKey = GlobalKey<FormState>();
   mainController countController = Get.put(mainController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Update todo Item')),
+      appBar: AppBar(
+        title: const Text('Update todo Item'),
+        backgroundColor: Colors.yellow,
+        foregroundColor: Colors.black,
+      ),
       body: Form(
         key: _formKey,
         child: Column(
@@ -34,13 +43,16 @@ class _upadateState extends State<upadate> {
                   return null;
                 },
                 onTap: () {
+                  // ignore: unused_label
                   controller:
+                  // ignore: unnecessary_string_interpolations
                   countController.controllername.text = '${widget.title}';
                 },
                 controller: countController.controllername,
                 decoration: const InputDecoration(
                     labelText: 'Update Item', hintText: 'on Tap and get data')),
             FlatButton(
+              // ignore: sort_child_properties_last
               child: const Text(
                 'Update',
                 style: TextStyle(fontSize: 20.0),
@@ -62,8 +74,9 @@ class _upadateState extends State<upadate> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => todoApp(
-                            returnData: countController.controllername.text)),
+                        builder: (context) => const todoApp(homeDark: false
+                            // returnData: countController.controllername.text
+                            )),
                   );
                 }
               },
