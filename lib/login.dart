@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:get/get.dart';
 import 'main.dart';
+import 'controller/todoController.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key, required this.dark}) : super(key: key);
@@ -13,6 +14,7 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  mainController countController = Get.put(mainController());
   final _formKey = GlobalKey<FormState>();
   final dataSignup = GetStorage();
 
@@ -30,6 +32,7 @@ class _LoginState extends State<Login> {
                   // returnData: toString(),
                 )),
       );
+      // dataSignup.write('todoItem', countController.todoList);
 
       Get.snackbar('Successfully Login', 'sucessFully Login',
           // snackPosition: SnackPosition.BOTTOM,

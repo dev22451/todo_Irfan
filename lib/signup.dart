@@ -85,6 +85,9 @@ class _SignUpState extends State<SignUp> {
                   if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
                     return 'enter valid email address eg- irfan@gmail.com';
                   }
+                  if (value == dataSignup.read('userName')) {
+                    return 'All ready registered';
+                  }
 
                   return null;
                 },

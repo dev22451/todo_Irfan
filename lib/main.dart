@@ -66,6 +66,7 @@ class TodoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final box = GetStorage();
     return Container(
         decoration: const BoxDecoration(boxShadow: [
           BoxShadow(
@@ -139,11 +140,13 @@ class todoApp extends StatefulWidget {
 // ignore: camel_case_types
 class _todoAppState extends State<todoApp> {
   final dataSignup = GetStorage();
+  final box = GetStorage();
   // final _formKey = GlobalKey<FormState>();
   mainController countController = Get.put(mainController());
 
   @override
   Widget build(BuildContext context) {
+    dataSignup.writeIfNull('todoItem', false);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,

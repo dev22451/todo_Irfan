@@ -2,6 +2,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'main.dart';
 import 'package:get/get.dart';
 import 'controller/todoController.dart';
@@ -18,10 +19,12 @@ class upadate extends StatefulWidget {
 
 // ignore: camel_case_types
 class _upadateState extends State<upadate> {
+  final box = GetStorage();
   final _formKey = GlobalKey<FormState>();
   mainController countController = Get.put(mainController());
   @override
   Widget build(BuildContext context) {
+    // dataSignup.writeIfNull('todoItem', false);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Update todo Item'),
@@ -81,6 +84,7 @@ class _upadateState extends State<upadate> {
                 }
               },
             ),
+            // Text('${box.read('storagelist')}')
           ],
         ),
       ),
